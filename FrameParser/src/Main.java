@@ -14,11 +14,12 @@ public class Main {
 	public static void main(String[] args){
 		String line;
 		BufferedReader in;
-		
+
 
 
 		ArrayList<Paquet> packages = new ArrayList<Paquet>();
-		
+		ArrayList<String> result = new ArrayList<String>();
+
 		try {
 			in = new BufferedReader(new FileReader("fragments.txt"));
 			line = in.readLine();
@@ -34,16 +35,16 @@ public class Main {
 				int position = 0;
 				int subLength = 1;
 				int ipVersion = extractValue(position, subLength, line);
-				System.out.println("IP VERSION: " + ipVersion);
+				//System.out.println("IP VERSION: " + ipVersion);
 
-				
+
 				/*
 				 * EXTRACT TOTAL LENGTH
 				 */
 				position = 4; 
 				subLength = 4;
 				int totalLength = extractValue(position, subLength, line);
-				System.out.println("Total Length: " + totalLength);
+				//System.out.println("Total Length: " + totalLength);
 
 				/*
 				 * EXTRACT IDENTIFICATION
@@ -51,9 +52,9 @@ public class Main {
 				position = 8;
 				subLength = 4;
 				int identification = extractValue(position, subLength, line);
-				System.out.println("Identification: " + identification);
+				//System.out.println("Identification: " + identification);
 
-				
+
 				/*
 				 * EXTRACT "MORE FRAGMENTS" FLAG
 				 */
@@ -71,7 +72,7 @@ public class Main {
 				subLength = 4;
 				int bitStartPosition = 3;
 				int fragmentOffset = extractValue(position, subLength, line, bitStartPosition);
-				System.out.println("Fragment Offset: " + fragmentOffset);
+				//System.out.println("Fragment Offset: " + fragmentOffset);
 
 				/*
 				 * EXTRACT MESSAGE
@@ -79,26 +80,24 @@ public class Main {
 				position = 40;
 				subLength = (totalLength - 20) * 2;
 				String message = extractMessage(position, subLength, line);
-				System.out.println("Message: " + message);
+				//System.out.println("Message: " + message);
 
-				
+
 
 				Message msg = new Message(fragmentOffset, totalLength, identification, message, moreFragmentsFlag);
-				System.out.println("startIndex: " + msg.getStartIndex());
-				System.out.println("endIndex: " + msg.getEndIndex());
+				//System.out.println("startIndex: " + msg.getStartIndex());
+				//System.out.println("endIndex: " + msg.getEndIndex());
 
 				Paquet packageHoldingMsg = addMessageToPackageList(msg, packages);
 				boolean isPkgComplete = packageHoldingMsg.isPackageComplete();
-				
+
 				if(isPkgComplete)
 				{
-					System.out.println("*****************packageComplete*********************");
+					System.out.println("Detected and reassembled a complete package");
 					String packageToWrite = packageHoldingMsg.reassemblePackage() + "\n";
-					FileWriter fw = new FileWriter("data.txt",true); 
-					 fw.write(packageToWrite);
-					 fw.close();
+					result.add(packageToWrite);
 				}
-				
+
 				line = in.readLine();
 			}
 
@@ -107,12 +106,36 @@ public class Main {
 			e.printStackTrace();
 		}
 
+
+		if(result.size() >0){
+			try {
+				PrintWriter out = new PrintWriter("data.txt");
+				for(int i=0; i<result.size(); i++)
+				{
+					out.println(result.get(i));
+
+				}
+				System.out.println("Contents written to data.txt file in program directory.");
+				out.close();
+			} 
+			catch (FileNotFoundException e) 
+			{
+				System.out.println("An error occured.. Contents not written to file.");
+
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+
+
+		}
+
 	}
 
 	private static Paquet addMessageToPackageList(Message msg, ArrayList<Paquet> packages) {
 		boolean found = false;
 		int index = 0;
-		
+
 		//Check if the corresponding package already exists in the list
 		for (int i=0; i<packages.size(); i++)
 		{
@@ -123,7 +146,7 @@ public class Main {
 				break;
 			}
 		}
-		
+
 		//if doesn't exist, create a new package, and add to the list (with the new message)
 		if(!found)
 		{
@@ -132,7 +155,7 @@ public class Main {
 			packages.add(pkg);
 			return pkg;	
 		}
-		
+
 		//if the package associated with the msg already exists, add the message to that package
 		else 
 		{
@@ -145,7 +168,7 @@ public class Main {
 
 		String ss = line.substring(position, position + subLength);
 		//System.out.println("SS" + ss);
-		
+
 		//System.out.println("VERSION: " + result);
 		return ss;
 	}
@@ -160,7 +183,7 @@ public class Main {
 		String v = strBinary.substring(bitStartPosition);
 		//System.out.println("SS" + ss);
 		int result = Integer.parseInt(v, 2);
-		System.out.println("Fragment Offset: " + result+ " FRAGOFFSET RAW BITS: " + v);
+		//System.out.println("Fragment Offset: " + result+ " FRAGOFFSET RAW BITS: " + v);
 		return result;
 
 	}

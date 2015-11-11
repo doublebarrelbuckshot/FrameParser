@@ -49,19 +49,19 @@ public class Paquet {
 			int nextEndIndex = endIndex;
 			for(int i =0; i<this.messages.size(); i++)
 			{
-				System.out.println("RECONSTRUCT EndIndex:" + this.messages.get(i).getEndIndex());
-				System.out.println("***MSG***" + this.messages.get(i).getMessage());
+				//System.out.println("RECONSTRUCT EndIndex:" + this.messages.get(i).getEndIndex());
+				//System.out.println("***MSG***" + this.messages.get(i).getMessage());
 				if(this.messages.get(i).getEndIndex() == nextEndIndex)
 				{
 					nextEndIndex = this.messages.get(i).getStartIndex();
 					if(nextEndIndex == 0){
-						System.out.println("Fully Reconstructed");
+						//System.out.println("Fully Reconstructed");
 						return true;
 					}
 				}
 				else
 				{
-					System.out.println("RECONSTRUCT FAILED");
+					//System.out.println("RECONSTRUCT FAILED");
 					return false;
 				}
 

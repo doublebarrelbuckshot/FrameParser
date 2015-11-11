@@ -69,7 +69,7 @@ public class Message implements Comparable  {
 		this.message = message;
 	}
 
-	@Override
+
 	public int compareTo(Object o) {
 		Message msg = (Message)o;
 		int endIndex = msg.getEndIndex();
