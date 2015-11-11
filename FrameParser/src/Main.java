@@ -94,7 +94,7 @@ public class Main {
 				if(isPkgComplete)
 				{
 					System.out.println("Detected and reassembled a complete package");
-					String packageToWrite = packageHoldingMsg.reassemblePackage() + "\n";
+					String packageToWrite = packageHoldingMsg.reassemblePackage();
 					result.add(packageToWrite);
 				}
 
@@ -136,7 +136,7 @@ public class Main {
 	private static String addSpace(int interval, String str){
 		String temp="";
 		for(int i=0; i<str.length();i++){
-			if((interval+1)%4 == 0){
+			if((i+1)%interval == 0){
 				temp+=str.charAt(i)+" ";
 			}
 			else{
